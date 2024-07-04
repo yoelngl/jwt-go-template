@@ -1,7 +1,30 @@
-```markdown
+---
+
 # Golang Fiber JWT Authentication Starter
 
-This repository provides a starter template for building a JWT (JSON Web Token) based authentication system using Golang with the Fiber framework and MySQL for the database.
+This documentation provides a comprehensive guide for setting up and using the JWT authentication starter template built with Golang, Fiber, and MySQL.
+
+## Table of Contents
+
+- [Introduction](#introduction)
+- [Features](#features)
+- [Project Structure](#project-structure)
+- [Prerequisites](#prerequisites)
+- [Getting Started](#getting-started)
+- [Environment Variables](#environment-variables)
+- [Database Migrations](#database-migrations)
+- [Running the Application](#running-the-application)
+- [API Endpoints](#api-endpoints)
+  - [Authentication](#authentication)
+  - [User](#user)
+- [Testing](#testing)
+- [Makefile Commands](#makefile-commands)
+- [License](#license)
+- [Acknowledgments](#acknowledgments)
+
+## Introduction
+
+This project is a starter template for building a JWT-based authentication system using Golang with the Fiber framework and MySQL as the database. It provides a basic setup for user registration, login, and protected routes using JWT tokens.
 
 ## Features
 
@@ -85,15 +108,37 @@ cp .env.example .env
 go mod tidy
 ```
 
-### Run database migrations
+## Environment Variables
 
-Ensure your MySQL database is running and configured correctly in the `.env` file. Then run:
+The environment variables required for the application are defined in the `.env` file. Here is an example of the variables you need to set:
+
+```
+APP_PORT=3000
+DB_HOST=localhost
+DB_PORT=3306
+DB_USER=root
+DB_PASSWORD=yourpassword
+DB_NAME=yourdbname
+JWT_SECRET=yourjwtsecret
+```
+
+## Database Migrations
+
+To set up the database schema, run the following command:
 
 ```bash
 make migrate-up
 ```
 
-### Start the application
+To rollback the migrations, run:
+
+```bash
+make migrate-down
+```
+
+## Running the Application
+
+To start the application, run:
 
 ```bash
 go run main.go
@@ -105,39 +150,54 @@ The server will start on `http://localhost:3000`.
 
 ### Authentication
 
-- **POST /api/v1/auth/register**
-  - Register a new user
-  - Request body:
-    ```json
-    {
-      "username": "your-username",
-      "email": "your-email",
-      "password": "your-password"
-    }
-    ```
+#### Register
 
-- **POST /api/v1/auth/login**
-  - Login a user and get a JWT token
-  - Request body:
-    ```json
-    {
-      "email": "your-email",
-      "password": "your-password"
-    }
-    ```
+- **Endpoint**: `POST /api/v1/auth/register`
+- **Description**: Register a new user
+- **Request Body**:
+  ```json
+  {
+    "username": "your-username",
+    "email": "your-email",
+    "password": "your-password"
+  }
+  ```
+- **Response**:
+  - `201 Created`: User successfully registered
+  - `400 Bad Request`: Invalid request body
+
+#### Login
+
+- **Endpoint**: `POST /api/v1/auth/login`
+- **Description**: Login a user and get a JWT token
+- **Request Body**:
+  ```json
+  {
+    "email": "your-email",
+    "password": "your-password"
+  }
+  ```
+- **Response**:
+  - `200 OK`: Successfully authenticated, returns JWT token
+  - `401 Unauthorized`: Invalid credentials
 
 ### User
 
-- **GET /api/v1/user**
-  - Get user information (protected route, requires JWT)
-  - Headers:
-    ```json
-    {
-      "Authorization": "Bearer <your-jwt-token>"
-    }
-    ```
+#### Get User Information
 
-## Running Tests
+- **Endpoint**: `GET /api/v1/user`
+- **Description**: Get user information (protected route)
+- **Headers**:
+  ```json
+  {
+    "Authorization": "Bearer <your-jwt-token>"
+  }
+  ```
+- **Response**:
+  - `200 OK`: Returns user information
+  - `401 Unauthorized`: Invalid or missing JWT token
+
+## Testing
 
 To run tests, use the following command:
 
@@ -147,8 +207,8 @@ go test ./...
 
 ## Makefile Commands
 
-- `make migrate-up` - Run database migrations up
-- `make migrate-down` - Rollback database migrations
+- `make migrate-up`: Run database migrations up
+- `make migrate-down`: Rollback database migrations
 
 ## License
 
@@ -159,4 +219,5 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - [Fiber](https://github.com/gofiber/fiber)
 - [GORM](https://gorm.io/)
 - [JWT-Go](https://github.com/dgrijalva/jwt-go)
-```
+
+---
